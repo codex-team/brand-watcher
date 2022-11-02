@@ -1,13 +1,13 @@
 from time import sleep
 from source.crawlers.reddit import RedditCrawler
 from source.utils.config import get_access, read, save, read_list
+from CONFIG import data_path, redis_creds
 import json
 import redis
 
-query_str = "crawl"
-data_path = "data.json"
-cache_db = redis.Redis(host='redis-10381.c135.eu-central-1-1.ec2.cloud.redislabs.com',
-                       port=10381, db=0, password='EcqJqZRW8CPeSWaSvBpmN4vOpIh2tXoZ')
+
+cache_db = redis.Redis(host=redis_creds["host"],
+                       port=redis_creds["port"], db=0, password=redis_creds["password"])
 
 try:
     crawler = RedditCrawler(cache_db)

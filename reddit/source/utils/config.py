@@ -1,20 +1,21 @@
 import json
 import requests
 import requests.auth
+from CONFIG import creds_path, keywords_path
 
 def read_list():
-    with open('./keywords.json', 'r') as f:
+    with open(keywords_path, 'r') as f:
         data = json.load(f)
         return data
 
 def read():
-    with open('./credentials.json', "r") as f:
+    with open(creds_path, "r") as f:
         data = json.load(f)
         return data
 
 
 def save(creds):
-    with open('./credentials.json', "w") as f:
+    with open(creds_path, "w") as f:
         json.dump(creds, f)
 
 
