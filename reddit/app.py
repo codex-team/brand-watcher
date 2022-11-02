@@ -4,7 +4,13 @@ from source.utils.config import get_access, read, save, read_list
 from CONFIG import data_path, redis_creds
 import json
 import redis
+import logging
 
+logging.basicConfig(
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+
+logger = logging.getLogger(__name__)
 
 cache_db = redis.Redis(host=redis_creds["host"],
                        port=redis_creds["port"], db=0, password=redis_creds["password"])
@@ -12,10 +18,10 @@ cache_db = redis.Redis(host=redis_creds["host"],
 try:
     crawler = RedditCrawler(cache_db)
     id = crawler.identify()
-    print(
+    logger.info(
         f'Logged in under account: {id["subreddit"]["title"]}|{id["subreddit"]["display_name_prefixed"]}')
 except:
-    print('Account is not logged in ! Initiate login ...')
+    logger.info('Account is not logged in ! Initiate login ...')
     creds = read()
     response = get_access(
         creds['USER_NAME'], creds['PASSWORD'], creds['CLIENT_ID'], creds['CLIENT_SECRET'])
@@ -23,10 +29,10 @@ except:
     save(creds)
     crawler = RedditCrawler(cache_db)
     id = crawler.identify()
-    print(
+    logger.info(
         f'Logged in under account: {id["subreddit"]["title"]}|{id["subreddit"]["display_name_prefixed"]}')
 
-print("Start crawling ...")
+logger.info("Start crawling ...")
 
 while True:
     keywords = read_list()
