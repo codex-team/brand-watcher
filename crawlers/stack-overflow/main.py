@@ -7,7 +7,7 @@ from stackoverflow.utils.utils import Utils
 logging.basicConfig(level=logging.DEBUG)
 
 if __name__ == '__main__':
-    config = Utils.load_json_file('config.json.sample')
+    config = Utils.load_json_file('config.json')
 
     while True:
         crawler = StackOverflowCrawler(config['keywords'], config['redis']['host'], config['redis']['port'],
