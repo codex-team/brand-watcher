@@ -1,2 +1,4 @@
 env/
 __pycache__/
+access_token.json
+config.py
