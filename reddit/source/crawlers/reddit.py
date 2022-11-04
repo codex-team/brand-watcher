@@ -2,18 +2,19 @@ import requests
 import requests.auth
 import redis
 import json
-from source.utils import config
+from source.utils.tools import read_access_token
+import config
 
 
 class RedditCrawler:
 
     def __init__(self, cache: redis.Redis) -> None:
         self.cache = cache
-        self.creds = config.read()
+        self.access_token = read_access_token()
         self.base_url = "https://oauth.reddit.com/"
         self.headers = {
-            "Authorization": "bearer " + self.creds["ACCESS_TOKEN"],
-            "User-agent": self.creds["USER_NAME"] + "/0.1",
+            "Authorization": "bearer " + self.access_token,
+            "User-agent": config.USER_NAME + "/0.1",
         }
 
     def _get_from_cache(self, url: str, params: dict) -> dict:
