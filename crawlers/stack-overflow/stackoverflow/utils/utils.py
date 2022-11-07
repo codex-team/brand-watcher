@@ -1,4 +1,5 @@
 import json
+from hashlib import sha256
 
 
 class Utils:
@@ -26,4 +27,4 @@ class Utils:
         :returns: hashed string
         """
 
-        return str(hash(data))
+        return str(sha256(data))
