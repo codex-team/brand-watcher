@@ -27,4 +27,4 @@ class Utils:
         :returns: hashed string
         """
 
-        return str(sha256(data))
+        return sha256(data.encode('utf-8')).hexdigest()
