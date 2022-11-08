@@ -1,2 +1,7 @@
 env/
 __pycache__/
+redis_data
+.idea
+.DS_Store
+venv
+config.json

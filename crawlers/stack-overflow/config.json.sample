@@ -1,0 +1,9 @@
+{
+  "keywords": [],
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": ""
+  },
+  "delay": 30
+}
