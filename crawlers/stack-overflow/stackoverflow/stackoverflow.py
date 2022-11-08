@@ -9,14 +9,12 @@ class StackOverflowCrawler:
     """
     The StackOverflowCrawler make crawling of stackOverflow
     :param keywords - keywords to find
-    :param redis_host - host for redis database
-    :param redis_port- port for redis database
-    :param redis_password - password for redis database
+    :param db - database instance
     """
 
-    def __init__(self, keywords: list[str], redis_host: str, redis_port: int, redis_password: str = ''):
+    def __init__(self, keywords: list[str], db: Db):
         self.keywords = keywords
-        self.db = Db(redis_host, redis_port, redis_password)
+        self.db = db
 
     def crawl(self):
         """

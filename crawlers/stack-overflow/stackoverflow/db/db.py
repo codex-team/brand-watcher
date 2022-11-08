@@ -11,7 +11,7 @@ class Db:
     :param password - database password
     """
 
-    def __init__(self, host, port, password):
+    def __init__(self, host, port, password=''):
         try:
             self.redis = redis.StrictRedis(
                                             host=host,
