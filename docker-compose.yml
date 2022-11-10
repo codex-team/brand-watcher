@@ -1,0 +1,13 @@
+version: "3.3"
+services:
+    redis:
+      image: redis
+      volumes:
+        - ./redis_data:/data
+      ports:
+        - "6379:6379"
+    reddit-crawler:
+      build:
+        dockerfile: ./Dockerfile
+        context: crawlers/reddit/
+      command: python ./main.py
