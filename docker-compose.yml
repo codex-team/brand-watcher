@@ -6,6 +6,11 @@ services:
         - ./redis_data:/data
       ports:
         - "6379:6379"
+    stack-overflow-crawler:
+      build:
+        dockerfile: ./Dockerfile
+        context: crawlers/stack-overflow/
+      command: python ./main.py
     reddit-crawler:
       build:
         dockerfile: ./Dockerfile
