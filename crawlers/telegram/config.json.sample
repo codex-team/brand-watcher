@@ -1,0 +1,14 @@
+{
+  "keywords": [],
+  "telegram": {
+    "api_hash": "",
+    "api_id": "",
+    "chats": []
+  },
+  "redis": {
+    "host": "",
+    "port": "",
+    "password": ""
+  },
+  "session_name": ""
+}
