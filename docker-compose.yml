@@ -11,3 +11,8 @@ services:
         dockerfile: ./Dockerfile
         context: crawlers/stack-overflow/
       command: python ./main.py
+    telegram:
+      build:
+        dockerfile: ./Dockerfile
+        context: crawlers/telegram/
+      command: python ./main.py
