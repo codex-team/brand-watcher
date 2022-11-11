@@ -2,58 +2,29 @@ import requests
 import requests.auth
 import json
 from source.database.cache import CacheDB
-from source.utils.tools import read_access_token, get_access_token, update_config, read_config
 from source.utils.log import logger
+from source.utils.auth import RedditAuth
+from functools import wraps
+
+BASE_URL = 'https://oauth.reddit.com/' 
+
+def reddit_authenticated(func):
+    @wraps(func)
+    def wrapper(self, *args, **kwargs):
+        try:
+            return func(self, *args, **kwargs)
+        except Exception as e:
+            self.reddit.authenticate()
+            return func(self, *args, **kwargs)
+
+    return wrapper  
 
 
 class RedditCrawler:
 
-    def __init__(self, cache: CacheDB) -> None:
+    def __init__(self, cache: CacheDB, reddit: RedditAuth):
         self.cache = cache
-        self.access_token = read_access_token()
-        self.base_url = "https://oauth.reddit.com/"
-        self.conf = read_config()
-        self.headers = {
-            "Authorization": "bearer " + self.access_token,
-            "User-agent": self.conf["USER_NAME"] + "/0.1",
-        }
-
-    def _check_login(self) -> bool:
-        '''Check if this instance is logged in'''
-        id = self.identify()
-
-        if id.get('subreddit'):
-            logger.info(
-                f'Logged in under account: {id["subreddit"]["title"]}|{id["subreddit"]["display_name_prefixed"]}')
-            return True
-
-        return False
-
-    def _update_access_token(self) -> None:
-
-        access_token = get_access_token(
-            self.conf["USER_NAME"], self.conf["PASSWORD"], self.conf["CLIENT_ID"], self.conf["CLIENT_SECRET"])
-
-        update_config(access_token=access_token)
-
-        self.conf = read_config()
-        self.headers = {
-            "Authorization": "bearer " + self.access_token,
-            "User-agent": self.conf["USER_NAME"] + "/0.1",
-        }
-
-    def _login(self) -> None:
-        '''Login to Reddit API services
-        If failed, get new access token and try again'''
-
-        if not self._check_login():
-            logger.info('Account is not logged in ! Initiate login ...')
-
-            self._update_access_token()
-
-            if not self._check_login():
-                logger.error('Login failed!!!')
-                raise Exception('Login failed')
+        self.reddit = reddit
 
     def _get_from_cache(self, url: str, params: dict) -> dict:
         key = url + json.dumps(params)
@@ -61,20 +32,22 @@ class RedditCrawler:
         if value:
             return json.loads(self.cache.find_data(key))
 
-    def _save_to_cache(self, url: str, params: dict, value: dict) -> None:
+    def _save_to_cache(self, url: str, params: dict, value: dict):
         key = url + json.dumps(params)
         self.cache.save_data(key, json.dumps(value))
 
+    @reddit_authenticated
     def identify(self) -> dict:
         '''Get identify of current Crawler user
 
         :return `dict` object
         '''
-        url = f"{self.base_url}api/v1/me"
-        response = requests.get(url, headers=self.headers).json()
+        url = f'{BASE_URL}api/v1/me'
+        response = requests.get(url, headers=self.reddit.headers).json()
 
         return response
 
+    @reddit_authenticated
     def subreddit(self, query: str, exact: bool = False, include_over_18: bool = True, include_unadvertisable: bool = True, search_query_id: str = None, typeahead_active: bool = None) -> list:
         '''List subreddit names that begin with a query string
 
@@ -92,7 +65,7 @@ class RedditCrawler:
 
         If `exact` is true, only an exact match will be returned. Exact matches are inclusive of `over_18 subreddits`, but not `hide_ad` subreddits when `include_unadvertisable` is False.
         '''
-        url = f"{self.base_url}api/search_reddit_names"
+        url = f'{BASE_URL}api/search_reddit_names'
         params = {
             'exact': exact,
             'include_over_18': include_over_18,
@@ -105,15 +78,16 @@ class RedditCrawler:
 
         if not response:
             response = requests.get(
-                url, params=params, headers=self.headers).json()['names']
+                url, params=params, headers=self.reddit.headers).json()['names']
             self._save_to_cache(url, params, response)
 
         return response
 
-    def hot_posts(self, subreddit: str, g: str = "GLOBAL", after: str = None, before: str = None, count: int = 0, limit: int = 25, show: str = None, sr_detail: str = None) -> list:
+    @reddit_authenticated
+    def hot_posts(self, subreddit: str, g: str = 'GLOBAL', after: str = None, before: str = None, count: int = 0, limit: int = 25, show: str = None, sr_detail: str = None) -> list:
         '''List hotest posts from specific subreddit
 
-        :param `g`: one of (GLOBAL, US, AR, AU, BG, CA, CL, CO, HR, CZ, FI, FR, DE, GR, HU, IS, IN, IE, IT, JP, MY, MX, NZ, PH, PL, PT, PR, RO, RS, SG, ES, SE, TW, TH, TR, GB, US_WA, US_DE, US_DC, US_WI, US_WV, US_HI, US_FL, US_WY, US_NH, US_NJ, US_NM, US_TX, US_LA, US_NC, US_ND, US_NE, US_TN, US_NY, US_PA, US_CA, US_NV, US_VA, US_CO, US_AK, US_AL, US_AR, US_VT, US_IL, US_GA, US_IN, US_IA, US_OK, US_AZ, US_ID, US_CT, US_ME, US_MD, US_MA, US_OH, US_UT, US_MO, US_MN, US_MI, US_RI, US_KS, US_MT, US_MS, US_SC, US_KY, US_OR, US_SD)
+        :param `g`: one of (GLOBAL, US, AR, ...)
         :param `after`: fullname of a thing
         :param `befor`: fullname of a thing
         :param `count`: a positive integer (default: 0)
@@ -122,7 +96,7 @@ class RedditCrawler:
         :param `sr_detail`: (optional) expand subreddits
         :return `dict` type
         '''
-        url = f"{self.base_url}r/{subreddit}/hot"
+        url = f'{BASE_URL}r/{subreddit}/hot'
         params = {
             'g': g,
             'after': after,
@@ -135,7 +109,7 @@ class RedditCrawler:
         data = self._get_from_cache(url, params)
 
         if not data:
-            response = requests.get(url, params=params, headers=self.headers)
+            response = requests.get(url, params=params, headers=self.reddit.headers)
             articles = response.json()['data']['children']
             data = []
             for article in articles:
@@ -150,11 +124,3 @@ class RedditCrawler:
             self._save_to_cache(url, params, data)
 
         return data
-
-
-if __name__ == "__main__":
-    crawler = RedditCrawler()
-    # print(crawler.identify())
-    # print(crawler.subreddit(False, include_over_18=True,
-    #       include_unadvertisable=True, query="python"))
-    print(crawler.hot_posts('python', limit=10))

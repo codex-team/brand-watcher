@@ -3,22 +3,29 @@ from source.database.cache import CacheDB
 from source import RedditCrawler
 from source.utils.tools import read_list, read_config, save_list
 from source.utils.log import logger
+from source.utils.auth import RedditAuth
 
-redis_creds = read_config().get('redis_creds')
+if __name__ == '__main__':
+    
+    config = read_config()
+    redis_creds = config.get('redis')
 
-cache_db = CacheDB(host=redis_creds["host"],
-                   port=redis_creds["port"], password=redis_creds["password"])
+    reddit_auth = RedditAuth(
+        config['client_id'], config['client_secret'], config['username'], config['password'])
 
-crawler = RedditCrawler(cache_db)
+    cache_db = CacheDB(host=redis_creds['host'],
+                       port=redis_creds['port'], password=redis_creds['password'])
 
-logger.info("Start crawling ...")
+    crawler = RedditCrawler(cache_db, reddit_auth)
 
-while True:
-    keywords = read_list()
-    result = {}
-    for keyword in keywords:
-        result[keyword] = crawler.hot_posts(keyword)
+    logger.info('Start crawling ...')
 
-    save_list(result)
+    while True:
+        keywords = read_list()
+        result = {}
+        for keyword in keywords:
+            result[keyword] = crawler.hot_posts(keyword)
 
-    sleep(1)
+        save_list(result)
+
+        sleep(config.get('delay', 30))

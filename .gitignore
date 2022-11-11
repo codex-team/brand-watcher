@@ -5,5 +5,3 @@ redis_data
 .DS_Store
 venv
 config.json
-
-config.json
