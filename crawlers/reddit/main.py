@@ -6,7 +6,7 @@ from source.utils.log import logger
 from source.utils.auth import RedditAuth
 
 if __name__ == '__main__':
-    
+
     config = read_config()
     redis_creds = config.get('redis')
 

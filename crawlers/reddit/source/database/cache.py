@@ -5,7 +5,7 @@ from source.utils.log import logger
 class CacheDB:
     '''Methods to work with Redis cache database'''
 
-    def __init__(self, host: str, port: str, password: str = '') -> None:
+    def __init__(self, host: str, port: str, password: str = ''):
         try:
             self.redis = redis.StrictRedis(
                 host=host, port=port, password=password)
@@ -13,7 +13,7 @@ class CacheDB:
         except Exception as e:
             logger.error(f'Error while connecting to cache database: {e}')
 
-    def save_data(self, key: str, data: str) -> None:
+    def save_data(self, key: str, data: str):
         self.redis.set(key, data)
 
     def find_data(self, key: str) -> str:
