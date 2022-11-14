@@ -1,0 +1,7 @@
+{
+    "keywords": ["editorjs"],
+    "redis-url": "redis://redis",
+    "rabbitmq-url": "amqp://guest:guest@rabbitmq/",
+    "delay": 30
+}
+  
