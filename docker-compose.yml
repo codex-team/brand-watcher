@@ -17,4 +17,8 @@ services:
         dockerfile: ./Dockerfile
         context: crawlers/stack-overflow/
       command: python ./main.py
-
+    reddit-crawler:
+      build:
+        dockerfile: ./Dockerfile
+        context: crawlers/reddit/
+      command: python ./main.py
