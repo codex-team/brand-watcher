@@ -4,8 +4,7 @@ import pika
 class Broker:
     """
     The Broker has methods to work with message broker
-    :param host - rabbitmq host
-    :param port - rabbitmq port
+    :param rabbitmq_url - connection url for rabbitmq
     :param queue_name - queue name for crawler
     """
     def __init__(self, rabbitmq_url, queue_name):

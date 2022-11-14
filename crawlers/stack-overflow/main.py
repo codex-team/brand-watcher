@@ -13,7 +13,7 @@ if __name__ == '__main__':
 
     broker_queue = 'stack-overflow'
 
-    db = Db(config['redis']['host'], config['redis']['port'], config['redis']['password'])
+    db = Db(config['redis-url'])
     broker = Broker(config['rabbitmq-url'], broker_queue)
 
     while True:
