@@ -1,9 +1,6 @@
 {
-  "keywords": [],
-  "redis": {
-    "host": "redis",
-    "port": 6379,
-    "password": ""
-  },
+  "keywords": ["editorjs"],
+  "redis-url": "redis://redis",
+  "rabbitmq-url": "amqp://guest:guest@rabbitmq/",
   "delay": 30
 }
