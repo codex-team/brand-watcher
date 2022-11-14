@@ -3,19 +3,12 @@ import asyncio
 from telegram.utils.utils import Utils
 from telegram.crawler import TelegramCrawler
 
-KEYWORDS = ['editor.js', 'CodeX']
-TELEGRAM_PUBLIC = ['habr_com', 'slaveeks_test_channel', 'test_chat_test_slaveeks']
-
-
-async def callback(message):
-    print(message)
-
 
 async def main():
     config = Utils.load_json_file('config.json.sample')
-    crawler = TelegramCrawler(config['keywords'], config['telegram']['chats'], callback, config['telegram']['api_id'],
-                              config['telegram']['api_hash'], config['session_name'], config['redis']['host'],
-                              config['redis']['port'], config['redis']['password'])
+    crawler = TelegramCrawler(config['keywords'], config['telegram']['chats'], config['telegram']['api_id'],
+                              config['telegram']['api_hash'], config['session_name'], config['redis-url'],
+                              config['rabbitmq-url'])
 
     await crawler.start()
 

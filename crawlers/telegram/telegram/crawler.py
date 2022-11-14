@@ -7,12 +7,15 @@ from telegram.types.group import Group
 from telegram.types.message import Message
 from telegram.db.db import Db
 from telegram.utils.utils import Utils
+from telegram.broker.broker import Broker
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
+
+RABBITMQ_QUEUE = 'telegram'
 
 
 class TelegramCrawler:
@@ -25,14 +28,13 @@ class TelegramCrawler:
     :param api_hash - hash of telegram app
     """
 
-    def __init__(self, keywords, telegram_public, callback, api_id, api_hash, session_name,
-                 redis_host, redis_port, redis_password):
-        self.database = Db(redis_host, redis_port, redis_password)
+    def __init__(self, keywords, telegram_public, api_id, api_hash, session_name, redis_url, rabbitmq_url):
+        self.database = Db(redis_url)
+        self.broker = Broker(rabbitmq_url, RABBITMQ_QUEUE)
         self.session_name = session_name
         self.api_id = api_id
         self.api_hash = api_hash
         self.client = None
-        self.callback = callback
         self.channels = []
         self.keywords = keywords
         self.telegram_public = telegram_public
@@ -119,4 +121,5 @@ class TelegramCrawler:
         # Save new data to database
         self.database.save_data(event_id, str_data)
 
-        await self.callback(data)
+        self.broker.send(str_data)
+

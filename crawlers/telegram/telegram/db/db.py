@@ -11,14 +11,10 @@ class Db:
     :param password - database password
     """
 
-    def __init__(self, host, port, password=''):
+    def __init__(self, redis_url):
         try:
-            self.redis = redis.StrictRedis(
-                                            host=host,
-                                            port=port,
-                                            password=password
-            )
-            logging.info(f'Connected to database on port: {port}')
+            self.redis = redis.Redis.from_url(redis_url)
+            logging.info(f'Connected to database on: {redis_url}')
         except Exception as e:
             logging.error(f'Error while connecting to database: {e}')
 

@@ -5,10 +5,7 @@
     "api_id": "",
     "chats": []
   },
-  "redis": {
-    "host": "",
-    "port": "",
-    "password": ""
-  },
+  "redis-url": "redis://redis",
+  "rabbitmq-url": "amqp://guest:guest@rabbitmq/",
   "session_name": ""
 }
