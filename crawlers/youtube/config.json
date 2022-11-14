@@ -1,0 +1,10 @@
+{
+  "keywords": ["jutarnji program rts"],
+  "api_key": "AIzaSyAcGuiqhb-JnMpF5Jo2blpDqdgxa6uGoiI",
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": ""
+  },
+  "delay": 30
+}
