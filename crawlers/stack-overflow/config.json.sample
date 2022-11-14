@@ -5,6 +5,6 @@
     "port": 6379,
     "password": ""
   },
-  "rabbitmq-url": "",
+  "rabbitmq-url": "amqp://guest:guest@rabbitmq/",
   "delay": 30
 }
