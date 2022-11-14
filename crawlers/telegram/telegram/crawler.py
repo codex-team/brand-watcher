@@ -3,10 +3,10 @@ import logging
 from telethon import events
 from telethon import TelegramClient
 
-from crawler.types.group import Group
-from crawler.types.message import Message
-from crawler.db.db import Db
-from crawler.utils.utils import Utils
+from telegram.types.group import Group
+from telegram.types.message import Message
+from telegram.db.db import Db
+from telegram.utils.utils import Utils
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO

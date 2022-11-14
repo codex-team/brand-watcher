@@ -1,7 +1,7 @@
 import asyncio
 
-from crawler.utils.utils import Utils
-from crawler.crawler import TelegramCrawler
+from telegram.utils.utils import Utils
+from telegram.crawler import TelegramCrawler
 
 KEYWORDS = ['editor.js', 'CodeX']
 TELEGRAM_PUBLIC = ['habr_com', 'slaveeks_test_channel', 'test_chat_test_slaveeks']
