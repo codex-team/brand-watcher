@@ -3,6 +3,7 @@ import json
 from stackoverflow.types.question import Question
 from stackoverflow.db.db import Db
 from stackoverflow.utils.utils import Utils
+from stackoverflow.broker.broker import Broker
 
 
 class StackOverflowCrawler:
@@ -12,9 +13,10 @@ class StackOverflowCrawler:
     :param db - database instance
     """
 
-    def __init__(self, keywords: list[str], db: Db):
+    def __init__(self, keywords: list[str], db: Db, broker: Broker):
         self.keywords = keywords
         self.db = db
+        self.broker = broker
 
     def crawl(self):
         """
@@ -31,15 +33,14 @@ class StackOverflowCrawler:
             hashed_question_url = Utils.hash_data(question.url)
             res = self.db.find_data(hashed_question_url)
 
-            print(f"Founded data: {res}")
-
             if not res:
                 # Convert dict data to string
                 data = json.dumps(question.to_dict())
 
+                self.broker.send(data)
+
                 self.db.save_data(hashed_question_url, data)
 
-                print(f"New data: {data}")
 
 
 
