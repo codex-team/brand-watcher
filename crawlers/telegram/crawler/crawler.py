@@ -86,7 +86,7 @@ class TelegramCrawler:
         # Run telegram client to wait for incoming events
         await self.client.run_until_disconnected()
 
-    async def __parse_message(self, message):
+    async def __parse_message(self, message: Message):
         """
         Create object for callback function and call it
         :param message: message to parse
@@ -102,11 +102,16 @@ class TelegramCrawler:
         if res:
             return
 
+        comments = []
+
+        for comment in message.comments:
+            comments.append(comment.to_dict())
+
         data = {
             'text': message.text,
             'date': message.date,
             'author': channel.title,
-            'comments': message.comments
+            'comments': comments
         }
 
         str_data = json.dumps(data)
