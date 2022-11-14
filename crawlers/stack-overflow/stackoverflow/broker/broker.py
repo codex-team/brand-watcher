@@ -8,8 +8,8 @@ class Broker:
     :param port - rabbitmq port
     :param queue_name - queue name for crawler
     """
-    def __init__(self, host, port, queue_name):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host, port))
+    def __init__(self, rabbitmq_url, queue_name):
+        self.connection = pika.BlockingConnection(pika.URLParameters(rabbitmq_url))
         self.channel = self.connection.channel()
         self.queue_name = queue_name
         self.channel.queue_declare(queue_name)

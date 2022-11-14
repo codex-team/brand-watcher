@@ -14,7 +14,7 @@ if __name__ == '__main__':
     broker_queue = 'stack-overflow'
 
     db = Db(config['redis']['host'], config['redis']['port'], config['redis']['password'])
-    broker = Broker(config['rabbitmq']['host'], config['rabbitmq']['port'], broker_queue)
+    broker = Broker(config['rabbitmq-url'], broker_queue)
 
     while True:
         crawler = StackOverflowCrawler(config['keywords'], db, broker)
