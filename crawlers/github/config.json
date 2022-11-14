@@ -1,0 +1,9 @@
+{
+"keywords": ["editor.js", "codex"],
+"redis": {
+    "host": "localhost",
+    "port": 6379,
+    "password": ""
+},
+"delay": 30
+}
