@@ -1,0 +1,14 @@
+{
+  "keywords": {
+  "target_type": "posts",
+  "order": "relevance",
+  "q": "Катя"
+  },
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": ""
+  },
+  "delay": 300,
+  "num": 5
+}
