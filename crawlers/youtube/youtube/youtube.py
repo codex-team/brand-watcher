@@ -1,6 +1,6 @@
 import json
 
-from youtube.utils.functions import Functions
+from youtube.functions.functions import Functions
 from youtube.db.db import Db
 from youtube.utils.utils import Utils
 from googleapiclient.discovery import build
