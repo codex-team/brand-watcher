@@ -30,7 +30,7 @@ class YouTubeCrawler:
         for keyword in self.keywords:
             videos += Functions.search_video(keyword, self.youtube)
 
-        # Check of founded questions, if it exists in database
+        # Check of founded videos, if it exists in database
         for video in videos:
             hashed_video_url = Utils.hash_data(video['url'])
             res = self.db.find_data(hashed_video_url)
