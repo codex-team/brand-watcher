@@ -1,6 +1,6 @@
 import json
 
-from youtube.functions.functions import Functions
+from youtube.search.search import search
 from youtube.db.db import Db
 from youtube.utils.utils import Utils
 from googleapiclient.discovery import build
@@ -28,7 +28,7 @@ class YouTubeCrawler:
 
         # Find videos with keywords
         for keyword in self.keywords:
-            videos += Functions.search_video(keyword, self.youtube)
+            videos += search.video(keyword, self.youtube)
 
         # Check of founded videos, if it exists in database
         for video in videos:
