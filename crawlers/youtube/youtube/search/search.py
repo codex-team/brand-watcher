@@ -1,4 +1,4 @@
-class search:
+class Search:
 
     def __init__(self, video_id, title: str, url: str, comments, videos, token):
         self.video_id = video_id
