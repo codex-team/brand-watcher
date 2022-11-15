@@ -8,9 +8,10 @@ from googleapiclient.discovery import build
 
 class YouTubeCrawler:
     """
-    The StackOverflowCrawler make crawling of stackOverflow
+    The YouTubeCrawler make crawling of YouTube
     :param keywords - keywords to find
     :param db - database instance
+    :param api_key - 
     """
 
     def __init__(self, keywords: list[str], db: Db, api_key):
