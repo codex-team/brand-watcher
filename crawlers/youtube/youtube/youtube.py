@@ -26,7 +26,7 @@ class YouTubeCrawler:
         """
         videos = []
 
-        # Find questions with keywords
+        # Find videos with keywords
         for keyword in self.keywords:
             videos += Functions.search_video(keyword, self.youtube)
 
