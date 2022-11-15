@@ -18,7 +18,7 @@ class search:
                 text = comment['snippet']['textDisplay']
                 self.comments.append(text)
             if "nextPageToken" in video_response:
-                return search.get_comments(youtube, self.video_id, self.comments, video_response['nextPageToken'])
+                return Search.get_comments(youtube, self.video_id, self.comments, video_response['nextPageToken'])
             else:
                 return self.comments
         except Exception:
@@ -34,7 +34,7 @@ class search:
                 'title': item['snippet']['title'],
                 'description': item['snippet']['description'],
                 'url': 'https://www.youtube.com/watch?v=' + (item['id']['videoId']),
-                'comments': search.get_comments(youtube, item['id']['videoId'])
+                'comments': Search.get_comments(youtube, item['id']['videoId'])
             }
             videos.append(video)
         return videos
