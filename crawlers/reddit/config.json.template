@@ -1,0 +1,17 @@
+{
+    "client_id": "",
+    "client_secret": "",
+    "redirect_uri": "",
+    "username": "",
+    "password": "",
+
+    "keywords" : [],
+
+    "redis": {
+        "host": "localhost",
+        "port": 6379,
+        "password": ""
+    },
+    
+    "delay": 30
+}
