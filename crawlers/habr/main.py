@@ -4,7 +4,6 @@ from crawler_tools.redis_db.db import Db
 
 # TODO make code review
 # TODO add logging
-# TODO implement redis
 
 if __name__ == '__main__':
     config = Utils.load_json_file('config.json.sample')
@@ -14,8 +13,8 @@ if __name__ == '__main__':
     while True:
         habr_parser = HabrParser(db, config['keywords'])
         result = habr_parser.run_parser(config['num'])
-
-        with open('result', 'w') as f:
-            f.write(result)
+        if result:
+            with open('result', 'a') as f:
+                f.write(result)
 
         habr_parser.sleep(config['delay'])

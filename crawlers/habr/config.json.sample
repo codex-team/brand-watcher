@@ -2,13 +2,13 @@
   "keywords": {
   "target_type": "posts",
   "order": "relevance",
-  "q": "Катя"
+  "q": "keks"
   },
   "redis": {
-    "host": "redis",
+    "host": "127.0.0.1",
     "port": 6379,
     "password": ""
   },
-  "delay": 300,
-  "num": 5
+  "delay": 2,
+  "num": 20
 }

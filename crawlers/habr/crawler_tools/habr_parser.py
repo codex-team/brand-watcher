@@ -47,7 +47,6 @@ class HabrParser:
         return json_data
 
     def _parse_single_article(self, url: str) -> dict:
-        sleep(1)
         req = requests.get(url)
         src = req.text
 
@@ -100,16 +99,27 @@ class HabrParser:
         return article_list
 
     def _parse_all_articles_into_dict(self, articles: list) -> dict:
-        result_dict = {'habr-crawler.com': {}}
+        result_dict = {}
+
         for i, article in enumerate(articles):
             article_url = article.find('a', class_='tm-article-snippet__title-link')['href']
-            if 'post' in article_url:
-                article_url = self.URL + article_url
+            article_url = self.URL + article_url
+
+            # Search data in redis
+            data_redis = self.db.find_data(article_url)
+
+            if data_redis:
+                print(f'Data is founded in DB: {article_url}')
+            elif 'post' in article_url:
                 print(f'Article #{i+1}', article_url)
 
                 # make get request and parse data from article
                 article_data = self._parse_single_article(article_url)
-                result_dict['habr-crawler.com'][i] = article_data
+                result_dict[i] = article_data
+
+                # Save in redis
+                string_result = json.dumps(result_dict)
+                self.db.save_data(article_url, string_result)
             else:
                 print(f'Article #{i+1} is not post, its url: {article_url}')
 
