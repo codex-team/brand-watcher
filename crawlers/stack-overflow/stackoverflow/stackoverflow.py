@@ -4,6 +4,7 @@ from stackoverflow.types.question import Question
 from stackoverflow.db.db import Db
 from stackoverflow.utils.utils import Utils
 from stackoverflow.broker.broker import Broker
+from stackoverflow.types.answer import Answer
 
 
 class StackOverflowCrawler:
@@ -31,15 +32,18 @@ class StackOverflowCrawler:
         # Check of founded questions, if it exists in database
         for question in questions:
             hashed_question_url = Utils.hash_data(question.url)
-            res = self.db.find_data(hashed_question_url)
+            res = self.db.find_data(hashed_question_url, question.keyword)
 
             if not res:
+                # Get answers by question
+                question.answers = Answer.find_by_question_id(question.question_id)
+
                 # Convert dict data to string
                 data = json.dumps(question.to_dict())
 
                 self.broker.send(data)
 
-                self.db.save_data(hashed_question_url, data)
+                self.db.save_data(hashed_question_url, question.keyword)
 
 
 
