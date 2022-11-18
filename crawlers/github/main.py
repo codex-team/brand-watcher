@@ -30,9 +30,3 @@ if __name__ == '__main__':
             result[keyword] = crawler.crawl(keyword)
 
         time.sleep(config["delay"])
-
-        
-
-
-
-    

@@ -20,4 +20,3 @@ if __name__ == '__main__':
         crawler = StackOverflowCrawler(config['keywords'], db, broker)
         crawler.crawl()
         time.sleep(config['delay'])
-
