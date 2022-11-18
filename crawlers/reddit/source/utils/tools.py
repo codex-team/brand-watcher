@@ -7,7 +7,7 @@ config_path = (Path(__file__).absolute().parent.parent.parent/'config.json')
 data_path = (Path(__file__).absolute().parent.parent.parent/'data.json')
 
 
-def read_config() -> dict: 
+def read_config() -> dict:
     '''Read Config file'''
     with open(config_path, 'r') as f:
         data = json.load(f)
@@ -22,9 +22,10 @@ def read_list() -> list:
 
 
 def save_list(data):
-    '''Save keywords list'''
+    '''Save data to data.json'''
     with open(data_path, 'w') as f:
         json.dump(data, f)
+
 
 def hash(data) -> str:
     '''Make hash from string'''

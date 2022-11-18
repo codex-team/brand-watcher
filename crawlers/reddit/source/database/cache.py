@@ -12,8 +12,9 @@ class CacheDB:
         except Exception as e:
             logger.error(f'Error while connecting to cache database: {e}')
 
-    def save_data(self, key: str, data: str):
-        self.redis.set(key, data)
+    def add_to_set(self, key: str, id: str):
+        self.redis.sadd(key, id)
 
-    def find_data(self, key: str) -> str:
-        return self.redis.get(key)
+    def is_existed(self, key: str, id: str) -> bool:
+        logger.info(f'Article {id} is in dataset {key}: {self.redis.sismember(key, id)}')
+        return self.redis.sismember(key, id)

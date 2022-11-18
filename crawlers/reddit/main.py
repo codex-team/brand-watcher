@@ -24,6 +24,4 @@ if __name__ == '__main__':
         for keyword in keywords:
             result[keyword] = crawler.hot_posts(keyword)
 
-        save_list(result)
-
         sleep(config.get('delay', 30))
