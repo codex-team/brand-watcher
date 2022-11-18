@@ -8,13 +8,11 @@ from source.utils.auth import RedditAuth
 if __name__ == '__main__':
 
     config = read_config()
-    redis_creds = config.get('redis')
 
     reddit_auth = RedditAuth(
         config['client_id'], config['client_secret'], config['username'], config['password'])
 
-    cache_db = CacheDB(host=redis_creds['host'],
-                       port=redis_creds['port'], password=redis_creds['password'])
+    cache_db = CacheDB(config['redis_url'])
 
     crawler = RedditCrawler(cache_db, reddit_auth)
 

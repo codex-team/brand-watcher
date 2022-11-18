@@ -4,6 +4,7 @@ import json
 from source.database.cache import CacheDB
 from source.utils.log import logger
 from source.utils.auth import RedditAuth
+from source.utils.tools import hash
 from functools import wraps
 
 BASE_URL = 'https://oauth.reddit.com/' 
@@ -14,6 +15,7 @@ def reddit_authenticated(func):
         try:
             return func(self, *args, **kwargs)
         except Exception as e:
+            logger.error(f'Crawler Error: {e}')
             self.reddit.authenticate()
             return func(self, *args, **kwargs)
 
@@ -115,6 +117,7 @@ class RedditCrawler:
             for article in articles:
                 tmp = article['data']
                 data.append({
+                    'id': tmp['id'],
                     'title': tmp['title'],
                     'author': tmp['author'],
                     'url': tmp['url'],
