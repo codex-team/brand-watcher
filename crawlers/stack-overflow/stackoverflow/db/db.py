@@ -37,4 +37,4 @@ class Db:
         :returns founded data
         """
 
-        self.redis.hget(f'{self.crawler_name}:{keyword}', data_id)
+        return self.redis.hget(f'{self.crawler_name}:{keyword}', data_id)
