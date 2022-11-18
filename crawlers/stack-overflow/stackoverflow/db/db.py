@@ -19,42 +19,22 @@ class Db:
         except Exception as e:
             logging.error(f'Error while connecting to database: {e}')
 
-    def save_data(self, data_id, keyword):
+    def save_data(self, data_id, keyword, date):
         """
         Save data
         :param data_id: key for database
         :param keyword: keyword of founded data
+        :param date: crawling data update date
         """
 
-        data = []
+        self.redis.hset(f'{self.crawler_name}:{keyword}', data_id, date)
 
-        # Get data from redis by keyword
-        redis_hash = self.redis.hget(self.crawler_name, keyword)
-
-        # Check if data by keyword exists
-        if redis_hash:
-            data = json.loads(redis_hash)
-
-        # Add new data id
-        data.append(data_id)
-
-        str_data = json.dumps(data)
-
-        # Save updated data
-        self.redis.hset(self.crawler_name, keyword, str_data)
-
-    def find_data(self, data_id, keyword) -> bool:
+    def find_data(self, data_id, keyword):
         """
         Find data
         :param data_id: key for search
         :param keyword: keyword in founded data
-        :returns true if data was found
+        :returns founded data
         """
 
-        redis_hash = self.redis.hget(self.crawler_name, keyword)
-
-        if redis_hash:
-            if data_id in json.loads(redis_hash):
-                return True
-
-        return False
+        self.redis.hget(f'{self.crawler_name}:{keyword}', data_id)

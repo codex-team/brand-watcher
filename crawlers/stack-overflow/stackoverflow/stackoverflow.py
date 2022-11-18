@@ -43,7 +43,7 @@ class StackOverflowCrawler:
 
                 self.broker.send(data)
 
-                self.db.save_data(hashed_question_url, question.keyword)
+                self.db.save_data(hashed_question_url, question.keyword, question.date)
 
 
 
