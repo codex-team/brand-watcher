@@ -1,10 +1,14 @@
 import json 
+from pathlib import Path 
 from hashlib import sha256
+
+config_path = (Path(__file__).absolute().parent.parent.parent/'config.json')
 
 class Utils:
     """
     Utils contains helpers
     """
+    # Read config file
     @staticmethod
     def load_json_file(file_path):
         """

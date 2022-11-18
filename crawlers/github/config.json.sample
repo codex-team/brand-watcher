@@ -1,7 +1,7 @@
 {
-    "keywords": ["editorjs"],
-    "redis-url": "redis://redis",
-    "rabbitmq-url": "amqp://guest:guest@rabbitmq/",
+    "keywords": ["editor.js"],
+
+    "redis_url": "redis://localhost:port",
+
     "delay": 30
 }
-  

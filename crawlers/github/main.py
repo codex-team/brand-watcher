@@ -15,20 +15,19 @@ logger = logging.getLogger(__name__)
 Init redis instance and crawler instance 
 """
 if __name__ == '__main__':
+
     config = Utils.load_json_file('config.json')
 
-    db = Db(config['redis']['host'], config['redis']['port'], config['redis']['password'])
+    db = Db(config['redis_url'])
+    
+    crawler = GithubCrawler(cache=db)
     
     logger.info("Crawler starting...")
 
     while True:
-        crawler = GithubCrawler(db=db)
+        result = {}
         for keyword in config["keywords"]:
-            try:
-                crawler.crawl(keyword)
-                crawler.update_redis(keyword)
-            except:
-                logger.info("Error when crawl with keyword: %s", keyword)
+            result[keyword] = crawler.crawl(keyword)
 
         time.sleep(config["delay"])
 

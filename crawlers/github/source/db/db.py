@@ -9,29 +9,17 @@ class Db:
     :param password - database password
     """
 
-    def __init__(self, host, port, password=''):
+    def __init__(self, url: str):
         try:
-            self.redis = redis.StrictRedis(host=host, port=port,
-                                            password=password)
+            self.redis = redis.StrictRedis.from_url(url, decode_responses=True)
             
-            logging.info(f'Connected to database on port: {port}')
+            logging.info(f'Connected to cache database on url: {url}')
         except Exception as e:
-            logging.error(f'Error while connecting to database: {e}')
+            logging.error(f'Error while connecting to cache database: {e}')
     
-    def save_data(self, data_id, data:str):
-        """
-        Save data
-        :param data_id: key for database
-        :param data: data to save
-        """
-
-        self.redis.set(data_id, data)
-
-    def find_data(self, data_id):
-        """
-        Find data
-        :param data_id: key for search 
-        :returns founded object
-        """
-
-        return self.redis.get(data_id)
+    def add_to_set(self, key: str, id: str):
+        self.redis.sadd(key, id)
+    
+    def is_existed(self, key: str, id: str) -> bool:
+        logging.info(f'Repo {id} is in dataset {key}: {self.redis.sismember(key, id)}')
+        return self.redis.sismember(key, id)
