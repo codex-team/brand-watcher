@@ -17,15 +17,17 @@ class Question:
     :param url - question link
     :param date - question creation date
     :param author - question author name
+    :param keyword - founded keyword
     """
 
-    def __init__(self, question_id, title: str, url: str, date, author: str):
+    def __init__(self, question_id, title: str, url: str, date, author: str, keyword: str):
         self.question_id = question_id
         self.title = title
         self.url = url
         self.date = date
         self.author = author
-        self.answers: list[Answer] = Answer.find_by_question_id(question_id)
+        self.answers: list[Answer] = []
+        self.keyword = keyword
 
     @classmethod
     def find_by_tag(cls: Type[T], tag: str) -> list[T]:
@@ -50,7 +52,7 @@ class Question:
             # Check founded data
             for item in res.json()['items']:
                 question = cls(item['question_id'], item['title'], item['link'], item['creation_date'],
-                               item['owner']['display_name'])
+                               item['owner']['display_name'], tag)
 
                 questions.append(question)
         except Exception as e:
