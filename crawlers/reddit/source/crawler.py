@@ -2,12 +2,14 @@ import requests
 import requests.auth
 import json
 from source.database.cache import CacheDB
+from source.broker import Broker
 from source.utils.log import logger
 from source.utils.auth import RedditAuth
 from source.utils.tools import hash
 from functools import wraps
 
-BASE_URL = 'https://oauth.reddit.com/' 
+BASE_URL = 'https://oauth.reddit.com/'
+
 
 def reddit_authenticated(func):
     @wraps(func)
@@ -19,23 +21,23 @@ def reddit_authenticated(func):
             self.reddit.authenticate()
             return func(self, *args, **kwargs)
 
-    return wrapper  
+    return wrapper
 
 
 class RedditCrawler:
 
-    def __init__(self, cache: CacheDB, reddit: RedditAuth, name: str = 'RedditCrawler'):
+    def __init__(self, cache: CacheDB, reddit: RedditAuth, broker: Broker, name: str = 'RedditCrawler'):
         self.name = name
         self.cache = cache
         self.reddit = reddit
+        self.broker = broker
 
-    def _save_to_cache(self, keyword, data):
+    def _save_to_cache(self, keyword, article):
         '''Check for existance and save to cache'''
-        for article in data:
-            key = f'{self.name}:{keyword}'
-            id = article['id']
-            if not self.cache.is_existed(key, id):
-                self.cache.add_to_set(key, id)
+        key = f'{self.name}:{keyword}'
+        id = article['id']
+        if not self.cache.is_existed(key, id):
+            self.cache.add_to_set(key, id)
 
     @reddit_authenticated
     def identify(self) -> dict:
@@ -72,20 +74,23 @@ class RedditCrawler:
             'sr_detail': sr_detail
         }
 
-        response = requests.get(url, params=params, headers=self.reddit.headers)
+        response = requests.get(
+            url, params=params, headers=self.reddit.headers)
         articles = response.json()['data']['children']
         data = []
         for article in articles:
             tmp = article['data']
-            data.append({
+            article_details = {
                 'id': tmp['id'],
                 'title': tmp['title'],
                 'author': tmp['author'],
                 'url': tmp['url'],
                 'tag': tmp['link_flair_text'],
                 'num_cmt': tmp['num_comments']
-            })
+            }
 
-        self._save_to_cache(subreddit, data)
+            self.broker.send(json.dumps(article_details))
+            self._save_to_cache(subreddit, article_details)
+            data.append(article_details)
 
         return data
