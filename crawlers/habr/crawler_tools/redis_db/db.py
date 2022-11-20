@@ -38,3 +38,7 @@ class Db:
         """
 
         return self.redis.get(data_id)
+
+    def clear_cache(self):
+        """Clear existing cache"""
+        self.redis.flushdb()

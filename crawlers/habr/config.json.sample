@@ -2,13 +2,13 @@
   "keywords": {
   "target_type": "posts",
   "order": "relevance",
-  "q": "keks"
+  "q": "python"
   },
   "redis": {
     "host": "127.0.0.1",
     "port": 6379,
     "password": ""
   },
-  "delay": 2,
-  "num": 20
+  "delay": 5,
+  "required_page_number": 1
 }
