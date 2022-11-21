@@ -1,5 +1,5 @@
 from crawler_tools.parser.habr_parser import HabrParser
-from crawler_tools.utils.utils import load_json_file, add_or_save_data_to_json
+from crawler_tools.utils.utils import load_json_file, save_parsing_data
 from crawler_tools.redis_db.db import Db
 
 import logging
@@ -13,9 +13,9 @@ if __name__ == '__main__':
     db.clear_cache()
 
     while True:
-        habr_parser = HabrParser(db, config['keywords'])
-        result = habr_parser.run_parser(config['required_page_number'])
-        if result is not None and len(result) > 0:
-            # TODO How to add new data in result.json - file is very big to use json lib
-            add_or_save_data_to_json(result, 'result.json')
+        logging.info('Start parsing')
+        habr_parser = HabrParser(db, config['keywords'], config['page_delay'])
+        json_result = habr_parser.run_parser(config['required_page_number'])
+        save_parsing_data(json_result)
+
         habr_parser.sleep(config['delay'])

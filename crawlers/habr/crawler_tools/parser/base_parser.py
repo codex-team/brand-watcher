@@ -2,26 +2,35 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 from time import sleep
-from crawlers.habr.crawler_tools.utils.utils import dict_to_json
+
+from crawler_tools.utils.utils import dict_to_json
 
 
 class BaseParser:
-
+    """The main parser on which other parsers can be based"""
     HEADERS = {
         'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:105.0) Gecko/20100101 Firefox/105.0',
         'Accept': '*/*'
     }
 
-    def __init__(self, db, params):
+    def __init__(self, db, params, page_delay=0):
+        """
+        :param db - cache Redis Database for repeats elimination,
+        :param params - get-request parameters in URL,
+        :param page_delay - delay by every request for blocking prevention
+        """
         self.db = db
         self.params = params
+        self.page_delay = page_delay
 
     @staticmethod
     def sleep(time):
+        """Use for delay implementation"""
         sleep(time)
 
     def get_soup(self, url, params=None):
-        """Return a html-tree by request"""
+        """Return a html-tree by request. Using by every requests"""
+        self.sleep(self.page_delay)
         try:
             if params is None:
                 params = dict()
@@ -45,13 +54,16 @@ class BaseParser:
         string_result = dict_to_json(data)
         self.db.save_data(url, string_result)
 
-    def post_handler(self, url, h1_class, meta_data_class, author_class, content_id):
+    def post_handler(self, url, h1_class, meta_data_class, author_class, content_id, absence):
         """Base function for page parsing"""
+
         soup = self.get_soup(url, self.params)
 
-        expired_company = soup.find('div', class_='tm-expired-company')
-        if expired_company:
-            return {}
+        for cls in absence:
+            expired_company = soup.find('div', class_=cls)
+            if expired_company:
+                logging.info(f'Article {url} is empty. Company is not available.')
+                return {}
 
         title = soup.find('h1', class_=h1_class).text
 

@@ -1,31 +1,41 @@
 import logging
 
-from crawlers.habr.crawler_tools.utils.utils import dict_to_json
-from crawlers.habr.crawler_tools.parser.base_parser import BaseParser
+from crawler_tools.utils.utils import dict_to_json
+from crawler_tools.parser.base_parser import BaseParser
 
-
-# TODO One exception on single page fail all parsing: add saving every article
-# TODO Write user exception for controlling Attribute error or NoBrandError.
-# TODO Add delay between request
 
 class HabrParser(BaseParser):
     """This class crawlers habr.ru"""
 
     URL = 'https://habr.com'
 
+    HABR_ClASSES = {
+        'h1_class': 'tm-article-snippet__title tm-article-snippet__title_h1',
+        'meta_data_class': 'tm-article-snippet__meta',
+        'author_class': 'tm-user-info__user',
+        'content_id': 'post-content-body',
+        'absence': ['tm-expired-company']
+    }
+
     def run_parser(self, required_page_number):
         """
         Main function that start parsing
         Realized @required_page_number@ feature for amount controlling. Every page contains 20 articles
         """
-        try:
-            article_list = self._get_article_url_list(required_page_number)
-            articles_dict_data = self._iterate_by_article_url_list(article_list)
-        except AttributeError as err:
-            logging.warning(f'Some tag or class was changed on habr.com, {err}')
-            return None
+        result_dict = {}
+        
+        article_list = self._get_article_url_list(required_page_number)
+        for order_number, article_url in enumerate(article_list, start=1):
+            try:
+                single_article_data = self.parse_single_article(order_number, article_url)
+                if single_article_data:
+                    result_dict[order_number] = single_article_data
+            except AttributeError as err:
+                logging.warning(f'Article {self.URL + article_url} is not parsed. '
+                                f'Probably some tag or class was changed, {err}')
+                continue
 
-        data = dict_to_json(articles_dict_data)
+        data = dict_to_json(result_dict)
 
         return data
 
@@ -35,62 +45,40 @@ class HabrParser(BaseParser):
         and collect links to necessary articles
         :returns links of required articles
         """
-        articles_urls_list = list()
+        articles_short_list = list()
 
         soup = self.get_soup(self.URL + '/ru/search/', self.params)
-        empty_page = soup.find('div', class_='tm-empty-placeholder')
 
+        empty_page = soup.find('div', class_='tm-empty-placeholder')
         if empty_page:
             logging.warning(f'No one articles from habr.com with brand "{self.params["q"]}"')
-            return None
+            return []
 
         page_number = 1
         error = None
         while error is None and page_number != required_page_number + 1:
             all_article = soup.find('div', class_='tm-articles-list')
-            articles_urls_list += all_article.find_all('article', class_='tm-articles-list__item')
-
+            articles_short_list += all_article.find_all('article', class_='tm-articles-list__item')
             page_number += 1
             soup = self.get_soup(self.URL + f'/search/page{page_number}', self.params)
             error = soup.find('div', class_='tm-error-message')
 
-        return articles_urls_list
+        articles_urls_list = [
+            article.find('a', class_='tm-article-snippet__title-link')['href'] for article in articles_short_list
+        ]
 
-    def _iterate_by_article_url_list(self, articles: list) -> dict:
-        """
-        Find urls from articles list and
-        make requests to single article to collect information
-        """
-        result_dict = {}
+        # Filtering url if it is in Redis
+        urls_list_without_repetition = [url for url in articles_urls_list if self.db.find_data(url) is None]
 
-        for order_number, article in enumerate(articles, start=1):
-            article_url = article.find('a', class_='tm-article-snippet__title-link')['href']
-            article_url = self.URL + article_url
-
-            # Search data in redis
-            data_redis = self.db.find_data(article_url)
-
-            if data_redis:
-                logging.info(f'Data is founded in DB: {article_url}')
-                continue
-
-            result_dict[order_number] = self.parse_single_article(order_number, article_url)
-
-        return result_dict
+        return urls_list_without_repetition
 
     def parse_single_article(self, order_number, article_url):
         """Parse single article using url"""
-        post_article_data = self.post_handler(
-            article_url,
-            h1_class='tm-article-snippet__title tm-article-snippet__title_h1',
-            meta_data_class='tm-article-snippet__meta',
-            author_class='tm-user-info__user',
-            content_id='post-content-body'
-        )
+        single_article_data = self.post_handler(self.URL + article_url, **self.HABR_ClASSES)
         logging.info(f'Article #{order_number}, {article_url}')
-        self.save_in_db(article_url, post_article_data)
+        self.save_in_db(article_url, single_article_data)
 
-        return post_article_data
+        return single_article_data
 
 
 

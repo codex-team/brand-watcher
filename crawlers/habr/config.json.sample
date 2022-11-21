@@ -2,13 +2,14 @@
   "keywords": {
   "target_type": "posts",
   "order": "relevance",
-  "q": "python"
+  "q": "editor-js codex"
   },
   "redis": {
     "host": "127.0.0.1",
     "port": 6379,
     "password": ""
   },
-  "delay": 5,
-  "required_page_number": 1
+  "delay": 30,
+  "required_page_number": 1,
+  "page_delay": 0
 }
