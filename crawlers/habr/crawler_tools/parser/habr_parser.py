@@ -9,6 +9,12 @@ class HabrParser(BaseParser):
 
     URL = 'https://habr.com'
 
+    PARAMS = {
+        "target_type": "posts",
+        "order": "relevance",
+        "q": ""
+    }
+
     HABR_ClASSES = {
         'h1_class': 'tm-article-snippet__title tm-article-snippet__title_h1',
         'meta_data_class': 'tm-article-snippet__meta',
@@ -23,7 +29,7 @@ class HabrParser(BaseParser):
         Realized @required_page_number@ feature for amount controlling. Every page contains 20 articles
         """
         result_dict = {}
-        
+
         article_list = self._get_article_url_list(required_page_number)
         for order_number, article_url in enumerate(article_list, start=1):
             try:
@@ -47,11 +53,11 @@ class HabrParser(BaseParser):
         """
         articles_short_list = list()
 
-        soup = self.get_soup(self.URL + '/ru/search/', self.params)
+        soup = self.get_soup(self.URL + '/ru/search/', self.PARAMS)
 
         empty_page = soup.find('div', class_='tm-empty-placeholder')
         if empty_page:
-            logging.warning(f'No one articles from habr.com with brand "{self.params["q"]}"')
+            logging.warning(f'No one articles from habr.com with brand "{self.PARAMS["q"]}"')
             return []
 
         page_number = 1
@@ -60,7 +66,7 @@ class HabrParser(BaseParser):
             all_article = soup.find('div', class_='tm-articles-list')
             articles_short_list += all_article.find_all('article', class_='tm-articles-list__item')
             page_number += 1
-            soup = self.get_soup(self.URL + f'/search/page{page_number}', self.params)
+            soup = self.get_soup(self.URL + f'/search/page{page_number}', self.PARAMS)
             error = soup.find('div', class_='tm-error-message')
 
         articles_urls_list = [
@@ -80,6 +86,3 @@ class HabrParser(BaseParser):
         self.db.save_data(article_url, self.keyword, single_article_data['data_published'])
 
         return single_article_data
-
-
-

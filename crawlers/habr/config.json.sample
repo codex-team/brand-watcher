@@ -1,11 +1,8 @@
-{
-  "headers": {
-  "target_type": "posts",
-  "order": "relevance",
-  "q": "editor-js codex"
-  },
-  "redis-url": "redis://redis",
-  "delay": 30,
+{ "keywords":
+    ["barbie girl", "editor-js codex"],
+  "delay": 2,
   "required_page_number": 1,
-  "page_delay": 0
+  "page_delay": 0,
+  "redis-url": "redis://localhost:6379",
+  "rabbitmq-url": "amqp://guest:guest@rabbitmq/"
 }

@@ -11,15 +11,17 @@ class BaseParser:
         'Accept': '*/*'
     }
 
-    def __init__(self, db, params, page_delay=0):
+    PARAMS = {}
+
+    def __init__(self, db, keyword: str, page_delay=0):
         """
         :param db - cache Redis Database for repeats elimination,
-        :param params - get-request parameters in URL,
+        :param keyword - the words by which the search is carried out,
         :param page_delay - delay by every request for blocking prevention
         """
         self.db = db
-        self.keyword = params['q']
-        self.params = params
+        self.keyword = keyword
+        self.PARAMS['q'] = keyword
         self.page_delay = page_delay
 
     @staticmethod
@@ -51,7 +53,7 @@ class BaseParser:
     def post_handler(self, url, h1_class, meta_data_class, author_class, content_id, absence):
         """Base function for page parsing"""
 
-        soup = self.get_soup(url, self.params)
+        soup = self.get_soup(url, self.PARAMS)
 
         for cls in absence:
             expired_company = soup.find('div', class_=cls)
