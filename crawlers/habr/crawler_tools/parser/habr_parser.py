@@ -68,7 +68,8 @@ class HabrParser(BaseParser):
         ]
 
         # Filtering url if it is in Redis
-        urls_list_without_repetition = [url for url in articles_urls_list if self.db.find_data(url) is None]
+        urls_list_without_repetition = [url for url in articles_urls_list
+                                        if self.db.find_data(url, keyword=self.keyword) is None]
 
         return urls_list_without_repetition
 
@@ -76,7 +77,7 @@ class HabrParser(BaseParser):
         """Parse single article using url"""
         single_article_data = self.post_handler(self.URL + article_url, **self.HABR_ClASSES)
         logging.info(f'Article #{order_number}, {article_url}')
-        self.save_in_db(article_url, single_article_data)
+        self.db.save_data(article_url, self.keyword, single_article_data['data_published'])
 
         return single_article_data
 

@@ -3,8 +3,6 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 
-from crawler_tools.utils.utils import dict_to_json
-
 
 class BaseParser:
     """The main parser on which other parsers can be based"""
@@ -20,6 +18,7 @@ class BaseParser:
         :param page_delay - delay by every request for blocking prevention
         """
         self.db = db
+        self.keyword = params['q']
         self.params = params
         self.page_delay = page_delay
 
@@ -39,20 +38,15 @@ class BaseParser:
             soup = BeautifulSoup(src, 'lxml')
             return soup
         except requests.Timeout as err:
-            logging.warning(f"Ошибка timeout, при запросе: {url}, error: ', {err}")
+            logging.warning(f"Timeout error by request: {url}, error: ', {err}")
             return None
         except requests.HTTPError as err:
             code = err.response.status_code
-            logging.warning(f"Ошибка при запросе: {url}, code: {code}")
+            logging.warning(f"Request error: {url}, code: {code}")
             return None
         except requests.RequestException as err:
-            logging.warning(f'Ошибка при запросе: {url} , {err}')
+            logging.warning(f'Request error: {url} , {err}')
             return None
-
-    def save_in_db(self, url, data):
-        """Save info from request in redis"""
-        string_result = dict_to_json(data)
-        self.db.save_data(url, string_result)
 
     def post_handler(self, url, h1_class, meta_data_class, author_class, content_id, absence):
         """Base function for page parsing"""
