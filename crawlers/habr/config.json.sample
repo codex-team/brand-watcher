@@ -1,8 +1,8 @@
 { "keywords":
     ["barbie girl", "editor-js codex"],
-  "delay": 2,
+  "delay": 30,
   "required_page_number": 1,
-  "page_delay": 0,
-  "redis-url": "redis://localhost:6379",
+  "page_delay": 1,
+  "redis-url": "redis://redis",
   "rabbitmq-url": "amqp://guest:guest@rabbitmq/"
 }

@@ -9,7 +9,6 @@ logging.basicConfig(level=logging.DEBUG)
 CRAWLER_NAME = 'habr'
 
 if __name__ == '__main__':
-    # keyword is given in config["headers"]["q"]
     config = load_json_file('config.json.sample')
 
     db = Db(config['redis-url'], CRAWLER_NAME)
