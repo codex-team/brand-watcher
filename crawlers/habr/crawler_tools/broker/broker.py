@@ -1,6 +1,6 @@
 import pika
 
-
+logging.getLogger('pika').setLevel(logging.WARNING)
 class Broker:
     """
     The Broker has methods to work with message broker
