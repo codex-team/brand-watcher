@@ -1,5 +1,5 @@
 import pika
-
+import logging
 logging.getLogger('pika').setLevel(logging.WARNING)
 class Broker:
     """
