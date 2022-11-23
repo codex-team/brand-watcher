@@ -2,6 +2,7 @@ import logging
 import requests
 from bs4 import BeautifulSoup
 from time import sleep
+from crawlers.habr.crawler_tools.broker.broker import Broker
 
 
 class BaseParser:
@@ -13,7 +14,7 @@ class BaseParser:
 
     PARAMS = {}
 
-    def __init__(self, db, keyword: str, page_delay=0):
+    def __init__(self, db, keyword: str, broker: Broker, page_delay=0):
         """
         :param db - cache Redis Database for repeats elimination,
         :param keyword - the words by which the search is carried out,
@@ -22,6 +23,7 @@ class BaseParser:
         self.db = db
         self.keyword = keyword
         self.PARAMS['q'] = keyword
+        self.broker = broker
         self.page_delay = page_delay
 
     @staticmethod

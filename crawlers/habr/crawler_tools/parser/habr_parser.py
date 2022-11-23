@@ -83,6 +83,8 @@ class HabrParser(BaseParser):
         """Parse single article using url"""
         single_article_data = self.post_handler(self.URL + article_url, **self.HABR_ClASSES)
         logging.info(f'Article #{order_number}, {article_url}')
+
+        self.broker.send(single_article_data)
         self.db.save_data(article_url, self.keyword, single_article_data['data_published'])
 
         return single_article_data
