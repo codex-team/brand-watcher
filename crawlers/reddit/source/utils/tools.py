@@ -21,12 +21,12 @@ def read_list() -> list:
         return data.get('keywords')
 
 
-def save_list(data):
+def save_list(data: dict):
     '''Save data to data.json'''
     with open(data_path, 'w') as f:
         json.dump(data, f)
 
 
-def hash(data) -> str:
+def hash(data: str) -> str:
     '''Make hash from string'''
     return sha256(data.encode('utf-8')).hexdigest()

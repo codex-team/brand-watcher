@@ -35,9 +35,10 @@ class RedditCrawler:
     def _save_to_cache(self, keyword, article):
         '''Check for existance and save to cache'''
         key = f'{self.name}:{keyword}'
-        id = article['id']
-        if not self.cache.is_existed(key, id):
-            self.cache.add_to_set(key, id)
+        id_hash = hash(article['id'])
+        date = article['date']
+        if not self.cache.find_date(key, id_hash):
+            self.cache.add_to_set(key, id_hash, date)
 
     @reddit_authenticated
     def identify(self) -> dict:
@@ -86,7 +87,8 @@ class RedditCrawler:
                 'author': tmp['author'],
                 'url': tmp['url'],
                 'tag': tmp['link_flair_text'],
-                'num_cmt': tmp['num_comments']
+                'num_cmt': tmp['num_comments'],
+                'date': tmp['created_utc']
             }
 
             self.broker.send(json.dumps(article_details))

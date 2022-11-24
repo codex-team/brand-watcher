@@ -12,9 +12,9 @@ class CacheDB:
         except Exception as e:
             logger.error(f'Error while connecting to cache database: {e}')
 
-    def add_to_set(self, key: str, id: str):
-        self.redis.sadd(key, id)
+    def add_to_set(self, key, id, date):
+        self.redis.hset(id, key, date)
 
-    def is_existed(self, key: str, id: str) -> bool:
-        logger.info(f'Article {id} is in dataset {key}: {self.redis.sismember(key, id)}')
-        return self.redis.sismember(key, id)
+    def find_date(self, key: str, id: str) -> str:
+        logger.info(f'Article {id} of {key} created at date: {self.redis.hget(id, key)}')
+        return self.redis.hget(id, key)
