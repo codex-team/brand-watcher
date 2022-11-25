@@ -30,6 +30,7 @@ class HabrParser(BaseParser):
         """
         result_dict = {}
 
+        self.PARAMS['q'] = self.keyword
         article_list = self._get_article_url_list(required_page_number)
         for order_number, article_url in enumerate(article_list, start=1):
             try:

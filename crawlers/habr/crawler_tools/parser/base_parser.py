@@ -22,7 +22,6 @@ class BaseParser:
         """
         self.db = db
         self.keyword = keyword
-        self.PARAMS['q'] = keyword
         self.broker = broker
         self.page_delay = page_delay
 
