@@ -12,6 +12,11 @@ services:
         - ./redis_data:/data
       ports:
         - "6379:6379"
+    collector:
+      build:
+        dockerfile: ./Dockerfile
+        context: collector/
+      restart: on-failure
     stack-overflow-crawler:
       build:
         dockerfile: ./Dockerfile
