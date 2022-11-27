@@ -8,7 +8,7 @@ class Broker:
     """
     The Broker has methods to work with message broker
     :param rabbitmq_url - connection url for rabbitmq
-    :param queue_name - queue name for telegram
+    :param queue_name - queue name for crawler
     """
     def __init__(self, rabbitmq_url, queue_name):
         self.connection = pika.BlockingConnection(pika.URLParameters(rabbitmq_url))
