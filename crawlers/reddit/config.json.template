@@ -4,14 +4,8 @@
     "redirect_uri": "",
     "username": "",
     "password": "",
-
     "keywords" : [],
-
-    "redis": {
-        "host": "localhost",
-        "port": 6379,
-        "password": ""
-    },
-    
+    "redis_url": "redis://:@redis:6379/0",
+    "rabbitmq_url": "amqp://guest:guest@rabbitmq/",
     "delay": 30
 }
