@@ -9,10 +9,11 @@ class Message:
 
     def __init__(self, message_data):
         self.text = message_data.message
-        self.comments: list[Message] = []
+        self.comments = []
         self.message_id = message_data.id
         self.group_id = message_data.peer_id
         self.date = message_data.date
+        self.keyword = None
 
     async def get_replies(self, client):
         """
@@ -39,18 +40,7 @@ class Message:
         """
         for keyword in keywords:
             if keyword in self.text:
+                self.keyword = keyword
                 return True
         return False
-
-    def to_dict(self) -> dict:
-        """
-        Convert message to dict
-        :returns - converted to dict message
-        """
-        return {
-            "text": self.text,
-            "id": self.message_id,
-            "source_id": self.group_id,
-            "date": self.date
-        }
 

@@ -3,19 +3,16 @@ import logging
 from telethon import events
 from telethon import TelegramClient
 
-from telegram.types.group import Group
-from telegram.types.message import Message
-from telegram.db.db import Db
-from telegram.utils.utils import Utils
-from telegram.broker.broker import Broker
+from crawler.types.group import Group
+from crawler.types.message import Message
+from crawler.db.db import Db
+from crawler.utils.utils import Utils
 
 logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO
 )
 
 logger = logging.getLogger(__name__)
-
-RABBITMQ_QUEUE = 'telegram'
 
 
 class TelegramCrawler:
@@ -28,13 +25,13 @@ class TelegramCrawler:
     :param api_hash - hash of telegram app
     """
 
-    def __init__(self, keywords, telegram_public, api_id, api_hash, session_name, redis_url, rabbitmq_url):
-        self.database = Db(redis_url)
-        self.broker = Broker(rabbitmq_url, RABBITMQ_QUEUE)
+    def __init__(self, keywords, telegram_public, callback, api_id, api_hash, session_name, db: Db):
+        self.database: Db = db
         self.session_name = session_name
         self.api_id = api_id
         self.api_hash = api_hash
         self.client = None
+        self.callback = callback
         self.channels = []
         self.keywords = keywords
         self.telegram_public = telegram_public
@@ -88,7 +85,7 @@ class TelegramCrawler:
         # Run telegram client to wait for incoming events
         await self.client.run_until_disconnected()
 
-    async def __parse_message(self, message: Message):
+    async def __parse_message(self, message):
         """
         Create object for callback function and call it
         :param message: message to parse
@@ -99,27 +96,20 @@ class TelegramCrawler:
         event_id = Utils.hash_data(str(message.message_id) + str(channel.group_id))
 
         # Check if data already exists in database
-        res = self.database.find_data(event_id)
+        res = self.database.find_data(event_id, message.keyword)
 
         if res:
             return
 
-        comments = []
-
-        for comment in message.comments:
-            comments.append(comment.to_dict())
-
         data = {
+            'id': event_id,
             'text': message.text,
             'date': message.date,
             'author': channel.title,
-            'comments': comments
+            'comments': message.comments
         }
 
-        str_data = json.dumps(data)
-
         # Save new data to database
-        self.database.save_data(event_id, str_data)
+        self.database.save_data(event_id, message.keyword, message.date)
 
-        self.broker.send(str_data)
-
+        await self.callback(json.dumps(data))
