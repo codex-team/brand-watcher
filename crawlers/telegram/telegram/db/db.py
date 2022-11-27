@@ -7,7 +7,7 @@ class Db:
     """
     The Db has methods to work with database
     :param url - database url for connection
-    :param crawler_name - name of crawler
+    :param crawler_name - name of telegram
     """
 
     def __init__(self, url, crawler_name):

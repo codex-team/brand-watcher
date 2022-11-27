@@ -1,9 +1,9 @@
 import asyncio
 
-from crawler.utils.utils import Utils
-from crawler.crawler import TelegramCrawler
-from crawler.db.db import Db
-from crawler.broker.broker import Broker
+from telegram.utils.utils import Utils
+from telegram.crawler import TelegramCrawler
+from telegram.db.db import Db
+from telegram.broker.broker import Broker
 
 CRAWLER_NAME = "telegram"
 
