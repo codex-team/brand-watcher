@@ -22,6 +22,9 @@ services:
         dockerfile: ./Dockerfile
         context: collector/
       restart: on-failure
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
     stack-overflow-crawler:
       build:
         dockerfile: ./Dockerfile
