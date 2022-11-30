@@ -1,6 +1,8 @@
 import pika
 import logging
 logging.getLogger('pika').setLevel(logging.WARNING)
+
+
 class Broker:
     """
     The Broker has methods to work with message broker
@@ -19,4 +21,4 @@ class Broker:
         :param message: message to send
         """
 
-        self.channel.basic_publish(exchange='', routing_key=self.queue_name, body=message)
+        self.channel.basic_publish(exchange='', routing_key=self.queue_name, body=message.encode('UTF-8'))
