@@ -1,3 +1,4 @@
+// Package logger handle logging process to stdout with detailed timestamp
 package logger
 
 import (
