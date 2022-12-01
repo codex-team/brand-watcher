@@ -14,7 +14,7 @@ func main() {
 
 	rec := receiver.CreateReceiver(ch)
 
-	channel := make(chan receiver.MessageStruct)
+	channel := make(chan receiver.Message)
 
 	for _, queue := range config.Queues {
 		go rec.ReceiveQueue(queue, channel)

@@ -1,3 +1,4 @@
+// Package utils contains helpers.
 package utils
 
 import (
@@ -7,11 +8,13 @@ import (
 	"os"
 )
 
+// A Config contains config.json structure.
 type Config struct {
 	RabbitMQUrl string   `json:"rabbitmq-url"`
 	Queues      []string `json:"queues"`
 }
 
+// ReadConfigFile parse config file in path and returns object with type Config.
 func ReadConfigFile(path string) Config {
 	var config Config
 

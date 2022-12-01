@@ -1,3 +1,4 @@
+// Package receiver helps to receive broker messages.
 package receiver
 
 import (
@@ -6,7 +7,8 @@ import (
 	"github.com/streadway/amqp"
 )
 
-type MessageStruct struct {
+// A Message contains broker message structure.
+type Message struct {
 	Id       string   `json:"id"`
 	Title    string   `json:"title"`
 	Comments []string `json:"comments"`
@@ -17,12 +19,14 @@ type MessageStruct struct {
 	Keyword  string   `json:"keyword"`
 }
 
+// A Receiver contains broker receiver logic.
 type Receiver struct {
-	broker *amqp.Channel
+	broker *amqp.Channel // rabbitmq channel instance
 }
 
-func (r *Receiver) ReceiveQueue(queue string, ch chan MessageStruct) {
-	var message MessageStruct
+// ReceiveQueue starts receiving broker messages by queue name and parse it to Message, then sends result to the ch.
+func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
+	var message Message
 
 	messages, err := r.broker.Consume(
 		queue,
@@ -59,6 +63,7 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan MessageStruct) {
 	<-forever
 }
 
+// CreateReceiver creates Receiver instance.
 func CreateReceiver(ch *amqp.Channel) *Receiver {
 	return &Receiver{
 		broker: ch,

@@ -1,3 +1,4 @@
+// Package rabbitmq consists logic of connection to rabbitmq.
 package rabbitmq
 
 import (
@@ -5,6 +6,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
+// ConnectToRabbitMQ create a connection with rabbitmq by url and returns rabbitmq channel.
 func ConnectToRabbitMQ(rabbitmqUrl string) *amqp.Channel {
 	conn, err := amqp.Dial(rabbitmqUrl)
 
