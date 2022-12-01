@@ -4,9 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// GetLogger return logger with formatted colors and timestamp
 func GetLogger() *log.Logger {
-	/* Turn on the color formating
-	Use full timestamp */
 
 	var logger = log.New()
 
