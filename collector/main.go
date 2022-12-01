@@ -10,8 +10,8 @@ import (
 
 func main() {
 	config := utils.ReadConfigFile("./config.json")
-	log := logger.GetLogger()
-	log.Info(fmt.Sprintf("Connected to rabbitmq with url: %s", config.RabbitMQUrl))
 
 	rabbitmq.ConnectToRabbitMQ(config.RabbitMQUrl)
+	log := logger.GetLogger()
+	log.Info(fmt.Sprintf("Connected to rabbitmq with url: %s", config.RabbitMQUrl))
 }
