@@ -52,6 +52,14 @@ class RedditCrawler:
         return response
 
     @reddit_authenticated
+    def comments(self, subreddit: str, article_id: str) -> list:
+        '''Get list of comments from article'''
+        url = f'{BASE_URL}r/{subreddit}/comments/{article_id}'
+        response = requests.get(url, headers=self.reddit.headers).json()
+
+        return [cmt['data']['body'] for cmt in response[1]['data']['children']]
+
+    @reddit_authenticated
     def hot_posts(self, subreddit: str, g: str = 'GLOBAL', after: str = None, before: str = None, count: int = 0, limit: int = 25, show: str = None, sr_detail: str = None) -> list:
         '''List hotest posts from specific subreddit
 
@@ -84,11 +92,12 @@ class RedditCrawler:
             article_details = {
                 'id': tmp['id'],
                 'title': tmp['title'],
-                'author': tmp['author'],
+                'comments': self.comments(subreddit, tmp['id']),
+                'date': tmp['created_utc'],
+                'source': self.name,
                 'url': tmp['url'],
-                'tag': tmp['link_flair_text'],
-                'num_cmt': tmp['num_comments'],
-                'date': tmp['created_utc']
+                'keyword': subreddit,
+                'author': tmp['author'],
             }
 
             self.broker.send(json.dumps(article_details))
