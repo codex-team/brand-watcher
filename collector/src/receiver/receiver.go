@@ -14,7 +14,7 @@ type Message struct {
 	Date     int      `json:"date"`
 	Source   string   `json:"source"`
 	Body     string   `json:"body"`
-	Url      string   `json:"url"`
+	URL      string   `json:"url"`
 	Keyword  string   `json:"keyword"`
 }
 
@@ -59,7 +59,7 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
 		}
 	}()
 
-	r.logger.Infof(" [*] - start waiting for messages on %s queue", queue)
+	r.logger.Infof("[*] - start waiting for messages on %s queue", queue)
 	<-forever
 }
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"github.com/codex-team/brand-watcher/collector/pkg/logger"
 	"github.com/codex-team/brand-watcher/collector/pkg/rabbitmq"
 	"github.com/codex-team/brand-watcher/collector/src/receiver"

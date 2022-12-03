@@ -7,8 +7,8 @@ import (
 )
 
 // ConnectToRabbitMQ create a connection with rabbitmq by url and returns rabbitmq channel.
-func ConnectToRabbitMQ(rabbitmqUrl string, logger *logrus.Logger) *amqp.Channel {
-	conn, err := amqp.Dial(rabbitmqUrl)
+func ConnectToRabbitMQ(rabbitmqURL string, logger *logrus.Logger) *amqp.Channel {
+	conn, err := amqp.Dial(rabbitmqURL)
 
 	if err != nil {
 		logger.Error("error while connecting to RabbitMQ")
