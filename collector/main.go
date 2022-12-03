@@ -20,6 +20,7 @@ func main() {
 		go rec.ReceiveQueue(queue, channel)
 	}
 
+	// Look for data from channel with rabbitmq messages
 	for data := range channel {
 		fmt.Println(data)
 	}

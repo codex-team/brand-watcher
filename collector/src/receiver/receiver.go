@@ -46,6 +46,7 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
 	forever := make(chan bool)
 
 	go func() {
+		// Parse messages from rabbitmq queue
 		for d := range messages {
 			err = json.Unmarshal(d.Body, &message)
 
@@ -60,6 +61,8 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
 	}()
 
 	r.logger.Infof("[*] - start waiting for messages on %s queue", queue)
+
+	// Make listening from queue forever
 	<-forever
 }
 
