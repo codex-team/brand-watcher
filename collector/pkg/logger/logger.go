@@ -13,6 +13,7 @@ func GetLogger() *log.Logger {
 	logger.SetFormatter(&log.TextFormatter{
 		DisableColors: false,
 		FullTimestamp: true,
+		ForceColors:   true,
 	})
 
 	return logger
