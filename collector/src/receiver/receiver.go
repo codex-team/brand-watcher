@@ -9,7 +9,6 @@ import (
 
 // A Message contains broker message structure.
 type Message struct {
-	Id       string   `json:"id"`
 	Title    string   `json:"title"`
 	Comments []string `json:"comments"`
 	Date     int      `json:"date"`
@@ -65,8 +64,9 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
 }
 
 // CreateReceiver creates Receiver instance.
-func CreateReceiver(ch *amqp.Channel) *Receiver {
+func CreateReceiver(ch *amqp.Channel, logger *logrus.Logger) *Receiver {
 	return &Receiver{
 		broker: ch,
+		logger: logger,
 	}
 }

@@ -13,7 +13,7 @@ func main() {
 	log := logger.GetLogger()
 	config := utils.ReadConfigFile("./config.json", log)
 	ch := rabbitmq.ConnectToRabbitMQ(config.RabbitMQUrl, log)
-	rec := receiver.CreateReceiver(ch)
+	rec := receiver.CreateReceiver(ch, log)
 
 	channel := make(chan receiver.Message)
 

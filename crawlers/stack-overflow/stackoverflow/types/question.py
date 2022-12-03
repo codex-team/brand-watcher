@@ -78,7 +78,6 @@ class Question:
             answers.append(answer.title)
 
         return {
-            "id": self.question_id,
             "title": self.title,
             "url": self.url,
             "date": self.date,
