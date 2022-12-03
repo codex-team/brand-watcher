@@ -18,6 +18,6 @@ FROM alpine:3.14.1
 WORKDIR /usr/app
 
 COPY --from=build /collector /collector
-COPY config.json.sample ./config.json
+COPY config.json ./config.json
 
 ENTRYPOINT ["/collector"]
