@@ -3,7 +3,7 @@ package receiver
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
 
@@ -21,7 +21,8 @@ type Message struct {
 
 // A Receiver contains broker receiver logic.
 type Receiver struct {
-	broker *amqp.Channel // rabbitmq channel instance
+	broker *amqp.Channel  // rabbitmq broker channel instance
+	logger *logrus.Logger // logger
 }
 
 // ReceiveQueue starts receiving broker messages by queue name and parse it to Message, then sends result to the ch.
@@ -38,7 +39,7 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
 		nil)
 
 	if err != nil {
-		fmt.Println("Error to initiate consumer")
+		r.logger.Error("error to initiate consumer")
 
 		panic(err)
 	}
@@ -50,7 +51,7 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
 			err = json.Unmarshal(d.Body, &message)
 
 			if err != nil {
-				fmt.Println("Error while unmarshal message")
+				r.logger.Error("error while unmarshal message")
 
 				panic(err)
 			}
@@ -59,7 +60,7 @@ func (r *Receiver) ReceiveQueue(queue string, ch chan Message) {
 		}
 	}()
 
-	fmt.Printf(" [*] - start waiting for messages on %s queue", queue)
+	r.logger.Infof(" [*] - start waiting for messages on %s queue", queue)
 	<-forever
 }
 

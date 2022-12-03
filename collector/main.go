@@ -11,9 +11,8 @@ import (
 
 func main() {
 	log := logger.GetLogger()
-	config := utils.ReadConfigFile("./config.json")
-	ch := rabbitmq.ConnectToRabbitMQ(config.RabbitMQUrl)
-	log.Info(fmt.Sprintf("Connected to rabbitmq with url: %s", config.RabbitMQUrl))
+	config := utils.ReadConfigFile("./config.json", log)
+	ch := rabbitmq.ConnectToRabbitMQ(config.RabbitMQUrl, log)
 	rec := receiver.CreateReceiver(ch)
 
 	channel := make(chan receiver.Message)
@@ -23,6 +22,6 @@ func main() {
 	}
 
 	for data := range channel {
-		fmt.Println(data.Title)
+		fmt.Println(data)
 	}
 }
