@@ -18,10 +18,10 @@ if __name__ == '__main__':
 
     config = Utils.load_json_file('config.json')
 
-    db = Db(config['redis_url'])
-    
+    db = Db(config['redis_url'], crawler_name='github')
+
     crawler = GithubCrawler(cache=db)
-    
+
     logger.info('Crawler starting...')
 
     while True:

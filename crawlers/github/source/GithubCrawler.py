@@ -31,9 +31,9 @@ class GithubCrawler:
         '''
         for item in data:
             key = f'{self.name}:{keyword}'
-            id = item['url']
+            id = Utils.hash_data(item['url'])
             if not self.cache.is_existed(key, id):
-                self.cache.add_to_set(key, id)
+                self.cache.add_to_set(key, id, item['date'])
 
     def crawl(self, keyword):
         ''' Make request to github API in order to crawl related data with keyword
@@ -62,6 +62,7 @@ class GithubCrawler:
                 tmp['owner'] = item['owner']['login']
                 tmp['description'] = item['description']
                 tmp['language'] = item['language']
+                tmp['date'] = item['created_at']
                 data.append(tmp)
 
         self._save_to_cache(keyword, data)
