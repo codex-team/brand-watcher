@@ -1,4 +1,4 @@
-version: "3.3"
+version: "3.8"
 services:
     rabbitmq:
       image: rabbitmq:3-management-alpine
@@ -6,15 +6,40 @@ services:
       ports:
         - "127.0.0.1:5672:5672"
         - "127.0.0.1:15672:15672"
+      healthcheck:
+        test: [ "CMD", "nc", "-z", "127.0.0.1", "5672" ]
+        interval: 10s
+        timeout: 10s
+        retries: 5
     redis:
       image: redis
       volumes:
         - ./redis_data:/data
       ports:
         - "6379:6379"
+    collector:
+      build:
+        dockerfile: ./Dockerfile
+        context: collector/
+      restart: on-failure
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
     stack-overflow-crawler:
       build:
         dockerfile: ./Dockerfile
         context: crawlers/stack-overflow/
       command: python ./main.py
-
+      restart: on-failure
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
+    reddit-crawler:
+      build:
+        dockerfile: ./Dockerfile
+        context: crawlers/reddit/
+      command: python ./main.py
+      restart: on-failure
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
