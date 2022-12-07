@@ -22,11 +22,11 @@ if __name__ == '__main__':
     
     crawler = GithubCrawler(cache=db)
     
-    logger.info("Crawler starting...")
+    logger.info('Crawler starting...')
 
     while True:
         result = {}
-        for keyword in config["keywords"]:
+        for keyword in config['keywords']:
             result[keyword] = crawler.crawl(keyword)
 
-        time.sleep(config["delay"])
+        time.sleep(config['delay'])
