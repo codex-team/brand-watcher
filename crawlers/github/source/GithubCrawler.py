@@ -1,11 +1,11 @@
 import requests
 import json
-import redis 
+import redis
 import logging
 
 from source.db.db import Db
 from source.utils.utils import Utils
-
+from source.broker.message_queue import Broker
 BASE_URL = 'https://api.github.com/search/repositories'
 
 """
@@ -13,9 +13,10 @@ Crawler has 2 properties is base URL of GithubAPI
 and redis's database information.
 """
 
+
 class GithubCrawler:
 
-    def __init__(self, cache: Db, name: str = 'GithubCrawler' ):
+    def __init__(self, cache: Db, broker: Broker, name: str = 'GithubCrawler'):
         '''
         :param `name`: name of crawler
         :param `cache`: redis database
@@ -23,17 +24,16 @@ class GithubCrawler:
         self.name = name
         self.cache = cache
 
-    def _save_to_cache(self, keyword, data):
+    def _save_to_cache(self, keyword, item):
         ''' Check if keyword already in cache or not. If not, then update
 
         :param `keyword`: keyword from config file to get the realated data
         :param `data`: the data we got after make request
         '''
-        for item in data:
-            key = f'{self.name}:{keyword}'
-            id = Utils.hash_data(item['url'])
-            if not self.cache.is_existed(key, id):
-                self.cache.add_to_set(key, id, item['date'])
+        key = f'{self.name}:{keyword}'
+        id = Utils.hash_data(item['url'])
+        if not self.cache.is_existed(key, id):
+            self.cache.add_to_set(key, id, item['date'])
 
     def crawl(self, keyword):
         ''' Make request to github API in order to crawl related data with keyword
@@ -41,7 +41,7 @@ class GithubCrawler:
         :param `keyword`: keyword from config file to get the related data
         '''
         data = []
-        rq = f'{BASE_URL}?q={keyword}' 
+        rq = f'{BASE_URL}?q={keyword}'
         response = requests.get(rq).json()
         if len(response) == 0:
             logging.info(f'No data match with keyword: {keyword}')
@@ -65,6 +65,8 @@ class GithubCrawler:
                 tmp['date'] = item['created_at']
                 data.append(tmp)
 
-        self._save_to_cache(keyword, data)
+                self._save_to_cache(keyword, tmp)
+
+                self.broker.send(json.dumps(tmp))
 
         return data

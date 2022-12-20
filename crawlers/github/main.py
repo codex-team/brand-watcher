@@ -6,6 +6,7 @@ import redis
 from source.GithubCrawler import GithubCrawler
 from source.utils.utils import Utils
 from source.db.db import Db
+from source.broker.message_queue import Broker
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -20,7 +21,9 @@ if __name__ == '__main__':
 
     db = Db(config['redis_url'], crawler_name='github')
 
-    crawler = GithubCrawler(cache=db)
+    broker = Broker(config['rabbitmq-url'], queue_name='github')
+
+    crawler = GithubCrawler(cache=db, broker=broker)
 
     logger.info('Crawler starting...')
 
