@@ -23,6 +23,7 @@ class GithubCrawler:
         '''
         self.name = name
         self.cache = cache
+        self.broker = broker
 
     def _save_to_cache(self, keyword, item):
         ''' Check if keyword already in cache or not. If not, then update
