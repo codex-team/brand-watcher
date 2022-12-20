@@ -7,12 +7,12 @@ import (
 
 // GetLogger return logger with formatted colors and timestamp
 func GetLogger() *log.Logger {
-
 	var logger = log.New()
 
 	logger.SetFormatter(&log.TextFormatter{
 		DisableColors: false,
 		FullTimestamp: true,
+		ForceColors:   true,
 	})
 
 	return logger

@@ -1,24 +1,27 @@
+// Package utils contains helpers.
 package utils
 
 import (
 	"encoding/json"
-	"fmt"
+	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
 )
 
+// A Config contains config.json structure.
 type Config struct {
 	RabbitMQUrl string   `json:"rabbitmq-url"`
 	Queues      []string `json:"queues"`
 }
 
-func ReadConfigFile(path string) Config {
+// ReadConfigFile parse config file in path and returns object with type Config.
+func ReadConfigFile(path string, logger *logrus.Logger) Config {
 	var config Config
 
 	jsonFile, err := os.Open(path)
 
 	if err != nil {
-		fmt.Println("Error while opening config file")
+		logger.Error("error while opening config file")
 
 		panic(err)
 	}
@@ -28,7 +31,7 @@ func ReadConfigFile(path string) Config {
 	err = json.Unmarshal(byteValue, &config)
 
 	if err != nil {
-		fmt.Println("Error while unmarshal json data")
+		logger.Error("error while unmarshal json data")
 
 		panic(err)
 	}

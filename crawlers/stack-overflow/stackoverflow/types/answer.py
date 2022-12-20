@@ -57,18 +57,6 @@ class Answer:
             logging.warning(f'Invalid response structure: {e}')
         return answers
 
-    def to_dict(self):
-        """
-        Convert answer to dict
-        :returns: answer converted to dict
-        """
-
-        return {
-            "title": self.title,
-            "text": self.body,
-            "url": self.url,
-            "score": self.score
-        }
 
 
 
