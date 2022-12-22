@@ -90,14 +90,12 @@ class RedditCrawler:
         for article in articles:
             tmp = article['data']
             article_details = {
-                'id': tmp['id'],
                 'title': tmp['title'],
                 'comments': self.comments(subreddit, tmp['id']),
                 'date': tmp['created_utc'],
                 'source': self.name,
                 'url': tmp['url'],
                 'keyword': subreddit,
-                'author': tmp['author'],
             }
 
             self.broker.send(json.dumps(article_details))
