@@ -22,4 +22,4 @@ class Broker:
         :param message: message to send
         """
 
-        self.channel.basic_publish(exchange='', routing_key=self.queue_name, body=message)
+        self.channel.basic_publish(exchange='', routing_key=self.queue_name, body=message.encode('UTF-8'))
