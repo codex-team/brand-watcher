@@ -39,6 +39,7 @@ class RedditCrawler:
         date = article['date']
         if not self.cache.find_date(key, id_hash):
             self.cache.add_to_set(key, id_hash, date)
+            self.broker.send(json.dumps(article))
 
     @reddit_authenticated
     def identify(self) -> dict:
@@ -91,7 +92,6 @@ class RedditCrawler:
                 'date': tmp['created_utc']
             }
 
-            self.broker.send(json.dumps(article_details))
             self._save_to_cache(subreddit, article_details)
             data.append(article_details)
 

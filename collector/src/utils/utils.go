@@ -3,15 +3,17 @@ package utils
 
 import (
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"io/ioutil"
 	"os"
+
+	"github.com/sirupsen/logrus"
 )
 
 // A Config contains config.json structure.
 type Config struct {
 	RabbitMQUrl string   `json:"rabbitmq-url"`
 	Queues      []string `json:"queues"`
+	Webhook     string   `json:"webhook"`
 }
 
 // ReadConfigFile parse config file in path and returns object with type Config.

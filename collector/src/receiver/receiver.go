@@ -3,6 +3,7 @@ package receiver
 
 import (
 	"encoding/json"
+
 	"github.com/sirupsen/logrus"
 	"github.com/streadway/amqp"
 )
@@ -11,7 +12,7 @@ import (
 type Message struct {
 	Title    string   `json:"title"`
 	Comments []string `json:"comments"`
-	Date     int      `json:"date"`
+	Date     float64  `json:"date"`
 	Source   string   `json:"source"`
 	Body     string   `json:"body"`
 	URL      string   `json:"url"`

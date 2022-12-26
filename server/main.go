@@ -1,8 +1,9 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/codex-team/brand-watcher/server/pkg/logger"
-	"github.com/codex-team/brand-watcher/server/pkg/notification"
 	"github.com/codex-team/brand-watcher/server/src/utils"
 )
 
@@ -11,5 +12,5 @@ func main() {
 
 	log.Info("Start sending notifications")
 	config := utils.ReadConfigFile("./config.json", log)
-	notification.Notify(config.Webhook, config.Message, log)
+	fmt.Println(config.Message)
 }

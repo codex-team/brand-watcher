@@ -13,6 +13,7 @@ type Message struct {
 	Message string `json:"message"`
 }
 
+// Send notification using telegram webhook
 func Notify(webhook string, msg string, log *logrus.Logger) {
 	payload := url.Values{}
 	payload.Set("message", msg)
