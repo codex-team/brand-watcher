@@ -1,0 +1,7 @@
+{
+    "keywords": ["editor.js"],
+
+    "redis_url": "redis://localhost:port",
+
+    "delay": 30
+}
