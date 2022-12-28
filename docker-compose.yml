@@ -43,3 +43,13 @@ services:
       depends_on:
         rabbitmq:
           condition: service_healthy
+    habr-crawler:
+      build:
+        dockerfile: ./Dockerfile
+        context: crawlers/habr/
+      command: python ./main.py
+      restart: on-failure
+      depends_on:
+        rabbitmq:
+          condition: service_healthy
+
