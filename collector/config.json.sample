@@ -1,4 +1,5 @@
 {
   "rabbitmq-url": "amqp://guest:guest@rabbitmq/",
-  "queues": ["stack-overflow"]
+  "queues": ["stack-overflow"],
+  "webhook": ""
 }

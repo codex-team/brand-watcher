@@ -11,9 +11,8 @@ import (
 
 // A Config contains config.json structure.
 type Config struct {
-	RabbitMQUrl string   `json:"rabbitmq-url"`
-	Queues      []string `json:"queues"`
-	Webhook     string   `json:"webhook"`
+	Message string `json:"message"`
+	Webhook string `json:"webhook"`
 }
 
 // ReadConfigFile parse config file in path and returns object with type Config.
